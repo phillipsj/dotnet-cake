@@ -5,12 +5,11 @@ namespace DotnetCake {
     class Program {
         static int Main(string[] args) {
             var app = new CommandApp();
-            
+
             app.Configure(config => {
-                config.AddProxy<CakeSettings>("", cake => {
-                    config.AddCommand<InitCommand>("init");
-                    config.AddCommand<BuildCommand>("build");
-                });
+                config.SetApplicationName("cake");
+                config.AddCommand<InitCommand>("init");
+                config.AddCommand<BuildCommand>("build");
             });
 
             return app.Run(args);
