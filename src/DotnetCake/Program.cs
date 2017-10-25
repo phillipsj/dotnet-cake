@@ -1,18 +1,19 @@
-﻿using Microsoft.Extensions.CommandLineUtils;
+﻿using DotnetCake.Commands;
+using Spectre.CommandLine;
 
 namespace DotnetCake {
     class Program {
         static int Main(string[] args) {
-            var commandLineApp = new CommandLineApplication(false);
-            commandLineApp.HelpOption("-?|-h|--help");
-            commandLineApp.FullName = "Cake bootstrapper CLI version.";
-            commandLineApp.Option("-s|--script", "The Cake file to execute, defaults to build.cake.", CommandOptionType.SingleValue);
-            commandLineApp.Option("-t|--target", "The Cake task to target, defaults to Default.", CommandOptionType.SingleValue);
-            commandLineApp.Option("-c|--configuration", "The cake file to execute.", CommandOptionType.SingleValue);
-            commandLineApp.Option("-v|--verbosity", "The log level, defaults to verbose.", CommandOptionType.SingleValue);
-            commandLineApp.Option("-r|--skipToolPacakageRestore", "Allows skipping Cake package restore, default is false.", CommandOptionType.NoValue);
-           
-            return commandLineApp.Execute(args);
+            var app = new CommandApp();
+            
+            app.Configure(config => {
+                config.AddProxy<CakeSettings>("", cake => {
+                    config.AddCommand<InitCommand>("init");
+                    config.AddCommand<BuildCommand>("build");
+                });
+            });
+
+            return app.Run(args);
         }
     }
 }
