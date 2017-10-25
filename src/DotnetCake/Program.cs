@@ -1,60 +1,27 @@
 ﻿using System;
-using System.ComponentModel;
 using Microsoft.Extensions.CommandLineUtils;
-using Spectre.CommandLine;
-using Spectre.CommandLine.Annotations;
-
+using Microsoft.DotNet.Cli.Utils.CommandParsing;
 
 namespace DotnetCake {
     class Program {
         static int Main(string[] args) {
-            var app = new CommandApp();
-            app.Configure(config => {
-                config.AddProxy<BootstrapperSettings>("cake", bs => {
-                    bs.SetDescription("Cross platform Cake build tools bootstrapper.");
-                    bs.AddCommand<BootstrapperCommand>("bs");
-                });
-            });
-
-
-            return app.Run(args);
+            var commandLineApp = new CommandLineApplication(false);
+            commandLineApp.HelpOption("-?|-h|--help");
+            commandLineApp.FullName = "Cake bootstrapper CLI version.";
+            commandLineApp.Option("-s|--script", "The Cake file to execute, defaults to build.cake.", CommandOptionType.SingleValue);
+            commandLineApp.Option("-t|--target", "The Cake task to target, defaults to Default.", CommandOptionType.SingleValue);
+            commandLineApp.Option("-c|--configuration", "The cake file to execute.", CommandOptionType.SingleValue);
+            commandLineApp.Option("-v|--verbosity", "The log level, defaults to verbose.", CommandOptionType.SingleValue);
+            commandLineApp.Option("-r|--skipToolPacakageRestore", "Allows skipping Cake package restore, default is false.", CommandOptionType.NoValue);
+            var parser = new Parser<Options>();
+            return commandLineApp.Execute(args);
         }
+        
+        
     }
 
-    class CommandParser {
-        private readonly CommandLineApplication _commandApp;
-        private CommandArgument _command;
-        private CommandOption _configurationOption;
-        private CommandOption _outputOption;
-        private CommandArguments _parsed;
-        private CommandOption _scriptPath;
-        private CommandOption _targetsToExecute;
-        private CommandOption _parallelTargetExecution;
-
-        public CommandParser(CommandLineApplication commandApp) {
-            _commandApp = commandApp;
-        }
-
-        public CommandArguments Parse(string[] args) {
-            _parsed = new CommandArguments();
-
-            _commandApp.HelpOption("-?|-h|--help");
-            _command = _commandApp.Argument("[arguments]", "The command to execute", true);
-            if (args == null) {
-                args = new string[0];
-            }
-
-            _parsed.Help = true;
-            _commandApp.Execute(args);
-            return _parsed;
-        }
-
-        public void ShowHelp() => _commandApp.ShowHelp();
-    }
-
-    class CommandArguments {
-        public string Script { get; set; }
-        public bool Help { get; set; }
+    class Options {
+        
     }
 }
 
