@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.CommandLineUtils;
-using Microsoft.DotNet.Cli.Utils.CommandParsing;
+﻿using Microsoft.Extensions.CommandLineUtils;
 
 namespace DotnetCake {
     class Program {
@@ -13,15 +11,9 @@ namespace DotnetCake {
             commandLineApp.Option("-c|--configuration", "The cake file to execute.", CommandOptionType.SingleValue);
             commandLineApp.Option("-v|--verbosity", "The log level, defaults to verbose.", CommandOptionType.SingleValue);
             commandLineApp.Option("-r|--skipToolPacakageRestore", "Allows skipping Cake package restore, default is false.", CommandOptionType.NoValue);
-            var parser = new Parser<Options>();
+           
             return commandLineApp.Execute(args);
         }
-        
-        
-    }
-
-    class Options {
-        
     }
 }
 
